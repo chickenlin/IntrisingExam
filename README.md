@@ -18,9 +18,13 @@ A program simulate a system with two elevator. Once you want to take a elevator,
 **Method**
 
   `checkRange`: Use to check whether the input floor is in correct range
+  
   `display_floor`: display the position of the elevator
+  
   `isBusy`: return the elevator is busy or not
+  
   `move (int floor)`: a method which tell the elevator to move to floor
+  
   `callElevator (int current, int floor)`: the api for user to take the elevator from current to floor
 
 **Other function**
