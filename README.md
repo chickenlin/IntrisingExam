@@ -13,6 +13,7 @@ A program simulate a system with two elevator. Once you want to take a elevator,
 **Attribute**
 
   `current_floor (int)`: the elevator's position
+  
   `busy (bool)`: Indicate the elevator is busy or not
 
 **Method**
