@@ -4,6 +4,8 @@
 using namespace std;
 using std::this_thread::sleep_for;
 
+static const int NUM_OF_ELEVATOR = 2;
+
 /* --- The structure use to pass the parameter to the child thread --- */
 typedef struct {
     void *elevator;
@@ -14,6 +16,8 @@ typedef struct {
 class Elevator
 {
     int current_floor;
+
+    int id;
 
     /* --- Indicate the elevator is busy or not --- */
     bool busy;
@@ -27,6 +31,11 @@ public:
     /* --- Assume the elevator is at first floor initailly --- */
     Elevator(): current_floor(1), busy(false){}
 
+    void set_id(int ID)
+    {
+    	id = ID;
+    }
+
     int get_floor()
     {
         return current_floor;
@@ -34,7 +43,7 @@ public:
 
     void display_floor()
     {
-        cout << "The elevator is now on " + to_string(current_floor) + "th floor." << endl;
+        cout << "Elevator" + to_string(id) + " is now on " + to_string(current_floor) + "th floor." << endl;
     }
 
     bool isbusy()
@@ -44,18 +53,14 @@ public:
 
     void move(int floor)
     {
-        /* --- The elevator move to `current` floor (The user is here) --- */
-        //current_floor = current;
-        //display_floor();
-
         int direct;
         if (floor > current_floor)  direct = 1;
         else                        direct = -1;
         while (current_floor != floor)
         {
+            sleep_for(std::chrono::seconds(1));
             current_floor += direct;
             display_floor();
-            sleep_for(std::chrono::seconds(1));
         }
     }
 
@@ -70,11 +75,11 @@ public:
         busy = true;
 
         /* --- The elevator move to `current` floor (The position of user) --- */
-        cout << "Moving from " + to_string(current_floor) + " to " + to_string(current) + "th floor..." << endl;
+        cout << "Elevator" + to_string(id) + " is moving from " + to_string(current_floor) + " to " + to_string(current) + "th floor..." << endl;
         move(current);
         
         /* --- The elevator move to `floor` floor (The destination floor of user) --- */
-        cout << "Moving from " + to_string(current) + " to " + to_string(floor) + "th floor..." << endl;
+        cout << "Elevator" + to_string(id) + " is moving from " + to_string(current) + " to " + to_string(floor) + "th floor..." << endl;
         move(floor);
 
         busy = false;
@@ -91,14 +96,19 @@ void* elevatorThread(void *arg)
 
     Elevator *eletoCall = (Elevator*)elevator;
     eletoCall->callElevator(*(int*)current, *(int*)floor);
+    
+    pthread_detach(pthread_self());
+    
     return 0;
 }
 
 int main()
 {
-    static vector<Elevator> elevatorSet(2);
-    int current, floor;
-    pthread_t tids[2];
+    static vector<Elevator> elevatorSet(NUM_OF_ELEVATOR);
+    for (int i = 0; i < NUM_OF_ELEVATOR; i++)
+    	elevatorSet[i].set_id(i + 1);
+    int current, floor, minID, minDis;
+    pthread_t tids[NUM_OF_ELEVATOR];
 
     while (1)
     {
@@ -109,17 +119,14 @@ int main()
         if (in.compare("Exit") == 0) break;
 
         bool avail = true;
-        for (int i = 0; i < elevatorSet.size(); i++)
+        
+        
+        for (int i = 0; i < NUM_OF_ELEVATOR; i++)
         {
             avail = avail && elevatorSet[i].isbusy();
             if (elevatorSet[i].isbusy() == false)
             {
-                cout << "Input your current floor and your destination floor:" << endl;
-                cin >> current >> floor;
-                cout << current << floor;
-                ThreadArgs args = {&elevatorSet[i], &current, &floor};
-                pthread_create(&tids[i], NULL, elevatorThread, (void*)&args);
-                break;
+            	avail = false;
             }
         }
 
@@ -128,6 +135,26 @@ int main()
             cout << "No elevators is useable, please wait for a moment!" << endl;
             continue;
         }
+        
+        
+        cout << "Input your current floor and your destination floor:" << endl;
+        cin >> current >> floor;
+        minDis = INT_MAX;
+        
+        for (int i = 0; i < NUM_OF_ELEVATOR; i++)
+        {
+            if (elevatorSet[i].isbusy() == false)
+            {
+                if (abs(elevatorSet[i].get_floor() - current) < minDis)
+                {
+              	    minID = i;
+              	    minDis = abs(elevatorSet[i].get_floor() - current);
+                }
+            }
+        }
+
+        ThreadArgs args = {&elevatorSet[minID], &current, &floor};
+        pthread_create(&tids[minID], NULL, elevatorThread, (void*)&args);
     }
     return 0;
 }
