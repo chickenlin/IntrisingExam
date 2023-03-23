@@ -2,7 +2,7 @@
 A program simulate a system with two elevator. Once you want to take a elevator, enter `Start` into the terminal, then input `the floor you are located now` and `another floor you want to go`. The program will distribute an available elevator for you. If there is no available elevator, please wait for a moment. Once you want to exit, enter `Exit` to the terminal.
 
 ## Update
-  [2023/03/26](*Update*)Add elevator's id and method to choose the nearest elevator
+  **[2023/03/26]** (*Update*) Add elevator's id and method to choose the nearest elevator
 
 ## Development environment
   **OS**: Ubuntu 22.04 LTS
