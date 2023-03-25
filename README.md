@@ -2,7 +2,9 @@
 A program simulate a system with two elevator. Once you want to take a elevator, enter `Start` into the terminal, then input `the floor you are located now` and `another floor you want to go`. The program will distribute an available elevator for you. If there is no available elevator, please wait for a moment. Once you want to exit, enter `Exit` to the terminal.
 
 ## Update
-  **[2023/03/26]** (*Update*) Add elevator's id and method to choose the nearest elevator
+  **[2023/03/23]** (*Update*) Add elevator's id and method to choose the nearest elevator
+  
+  **[2023/03/23]** (*Update*) Add unittest's file and seperate the interface and implementation
 
 ## Development environment
   **OS**: Ubuntu 22.04 LTS
@@ -10,7 +12,13 @@ A program simulate a system with two elevator. Once you want to take a elevator,
   **Language**: GCC version 8.1.0 (C++17)
 
 ## Program overview
-**Object**
+
+**Command to compile**
+```shell=
+  $ g++ User.cpp Elevator.cpp -o User
+```
+
+**Elevator's Object**
 
   `Elevator`: the object present the elevator, I assume the elevator is at first floor initailly
 
@@ -37,5 +45,24 @@ A program simulate a system with two elevator. Once you want to take a elevator,
 **Other function**
 
   `elevatorThread`: the entry of the child thread, which will call `callElevator` subsequently
+  
+## Unit test
+I use GoogleTest to conduct unit test, which use Google's C++ test framework.
 
-***Warning***: Due to pthread, please execute this program on linux platform
+**Installment**
+```shell=
+  $ git clone https://github.com/google/googletest
+  $ cd googletest
+  $ mkdir build
+  $ cd build
+  $ cmake ..
+  $ make -j$(nproc)
+  $ sudo make install
+```
+
+**Command to compile**
+```shell=
+  $ g++ unittest.cpp Elevator.cpp -o unittest -std=c++17 -lgtest -lpthread
+```
+
+***Warning***: Due to pthread, please execute these programs on linux platform
