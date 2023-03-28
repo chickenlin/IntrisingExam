@@ -5,6 +5,8 @@ A program simulate a system with two elevator. Once you want to take a elevator,
   **[2023/03/23]** (*Update*) Add elevator's id and method to choose the nearest elevator
   
   **[2023/03/23]** (*Update*) Add unittest's file and seperate the interface and implementation
+  
+  **[2023/03/28]** (*Update*) Add an remote entity to moniter the elevator, the function of the moniter is described below
 
 ## Development environment
   **OS**: Ubuntu 22.04 LTS
@@ -64,5 +66,16 @@ I use GoogleTest to conduct unit test, which use Google's C++ test framework.
 ```shell=
   $ g++ unittest.cpp Elevator.cpp -o unittest -std=c++17 -lgtest -lpthread
 ```
+
+## Moniter
+
+**Abstract view of the design** ![1](abstract.png)
+**Logic flow of the program** ![2](flow.png)
+
+**Display channel**: The elevator can send the message to remote monitor 
+ ![3](display.PNG)
+
+**Command channel**: The remote monitor can send the command to activate the elevator
+ ![3](Command.PNG)
 
 ***Warning***: Due to pthread, please execute these programs on linux platform
